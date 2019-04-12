@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sparkify</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">  
+</head>
+
+<body>
+
+<!-- Navigation panel -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Sparkify Customer Churn Prediction</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item mt-1">
+        <a class="nav-link" href="https://www.udacity.com/">Made with Udacity <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://github.com/Lexie88rus"><img src="{{url_for('static', filename='githublogo.png')}}" class="img-fluid mt-0 ml-2" alt="github" width="30"></a>
+      </li> 
+    </ul>
+  </div>
+</nav>
+
+<!-- page header -->
+<div class="jumbotron" style="background-image: url({{url_for('static', filename='jumbotron.jpg')}})">
+    <div class="container">
+        <h1 class="text-center">Sparkify Customer Churn Prediction</h1>
+        <p class="text-center">Classify users to define potential customer churn</p>
+    </div>
+</div>
+
+<!--
+Information to be provided:
+    1. gender - user's gender
+    2. avg_events - average number of events per day for the user
+    3. avg_songs - average number of songs the user listens to per day
+    4. thumbs_up - number of thumbs up events
+    5. thumbs_down - number of thumbs down events
+    6. active_days - days since user's first event
+    7. last_location - location of the last event
+    8. last_level - user's last level (paid or free)
+    9. addfriends - number of add friends events
+-->
+
+<!-- main area to enter customer's data -->
+ <div class="row">
+          
+        {% block message %}
+        {% endblock %}
+               
+        <!-- input form for customer info -->
+        <form name="form" class="needs-validation ml-5 col-10" action="/go" method="get"  role="form">
+            
+            <!-- header of the input form -->
+            <h4 class="mb-3">Enter information about the user:</h4>
+                   
+            <div class="row">
+                
+                <!-- input gender -->
+                <div class="mb-3 col-6">
+                    <p>Gender:</p>
+                    <div class="custom-control custom-radio">
+                        <input id="male" name="gender" type="radio" class="custom-control-input" value="male"  checked required>
+                        <label class="custom-control-label" for="male">Male</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input id="female" name="gender" type="radio" class="custom-control-input" value="female" required>
+                        <label class="custom-control-label" for="female">Female</label>
+                    </div>
+                </div>
+                
+                <!-- input average number of events per day -->
+                <div class="mb-3 col-6">
+                    <label for="avgEvents">Average number of actions per day:</label>
+                    <input id="avgEvents" type="number" class="form-control form-control-lg mb-4 form-group" name="avgEvents" value="" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Valid number for average number of user's actions per day is required.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                
+                <!-- input average number of songs per day -->
+                <div class="mb-3 col-6">
+                    <label for="avgSongs">Average number of songs listened per day:</label>
+                    <input id="avgSongs" type="number" class="form-control form-control-lg mb-4 form-group" name="avgSongs" value="" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Valid number for average number of songs the user listens to per day is required.
+                    </div>
+                </div>
+                
+                <!-- input number of thumbs up events -->
+                <div class="mb-3 col-6">
+                    <label for="thumbsup">Number of thumbs up events:</label>
+                    <input id="thumbsup" type="number" class="form-control form-control-lg mb-4 form-group" name="thumbsup" value="" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Valid number for average number of thumps up events is required.
+                    </div>
+                </div>
+            
+            </div>
+            
+            <div class="row">
+                
+                <!-- input number of thumbs down events -->
+                <div class="mb-3 col-6">
+                    <label for="thumbsdown">Number of thumbs down events:</label>
+                    <input id="thumbsdown" type="number" class="form-control form-control-lg mb-4 form-group" name="thumbsdown" value="" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Valid number for average number of thumps down events is required.
+                    </div>
+                </div>
+                
+                <!-- input number of add friends events -->
+                <div class="mb-3 col-6">
+                    <label for="add_friend">Number of add friends events:</label>
+                    <input id="add_friend" type="number" class="form-control form-control-lg mb-4 form-group" name="add_friend" value="" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Valid number for average number of add friends events is required.
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="row">
+                
+                <!-- registration date -->
+                <div class="mb-3 col-4">
+                    <label for="level">Date of 1st event:</label>
+                    <input name="reg_date" class="form-control" type="date" value="2018-08-19" id="reg_date" required>
+                </div>
+                
+                <!-- current user level -->
+                <div class="mb-3 col-4">
+                    <label for="level">Current level:</label>
+                    <select class="custom-select d-block" name="level" id="level" required>
+                        <option value="">Choose...</option>
+                        <option>free</option>
+                        <option>paid</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid level.
+                    </div>
+                </div>
+                
+                 <!-- current user location -->
+                <div class="mb-3 col-4">
+                    <label for="location">Current location:</label>
+                    <select class="custom-select d-block" name="location" id="country" required>
+                        <option value="">Choose...</option>
+                        <option>AL</option>
+                        <option>AK</option>
+                        <option>AZ</option>
+                        <option>AR</option>
+                        <option>CA</option>
+                        <option>CO</option>
+                        <option>CT</option>
+                        <option>DE</option>
+                        <option>DC</option>
+                        <option>FL</option>
+                        <option>GA</option>
+                        <option>HI</option>
+                        <option>ID</option>
+                        <option>IL</option>
+                        <option>IN</option>
+                        <option>IA</option>
+                        <option>KS</option>
+                        <option>KY</option>
+                        <option>LA</option>
+                        <option>ME</option>
+                        <option>MD</option>
+                        <option>MA</option>
+                        <option>MI</option>
+                        <option>MN</option>
+                        <option>MS</option>
+                        <option>MO</option>
+                        <option>MT</option>
+                        <option>NE</option>
+                        <option>NV</option>
+                        <option>NH</option>
+                        <option>NJ</option>
+                        <option>NM</option>
+                        <option>NY</option>
+                        <option>NC</option>
+                        <option>ND</option>
+                        <option>OH</option>
+                        <option>KY</option>
+                        <option>OR</option>
+                        <option>PA</option>
+                        <option>RI</option>
+                        <option>SC</option>
+                        <option>SD</option>
+                        <option>TN</option>
+                        <option>TX</option>
+                        <option>UT</option>
+                        <option>VT</option>
+                        <option>VA</option>
+                        <option>WA</option>
+                        <option>WV</option>
+                        <option>WI</option>
+                        <option>WY</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid location.
+                    </div>
+                </div>
+                
+            </div>
+                           
+                <!-- Submit button -->
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Classify User</button>
+                
+        </form>
+        
+</div>
+
+</body>
+</html>
