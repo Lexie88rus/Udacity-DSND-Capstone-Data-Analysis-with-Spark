@@ -1,5 +1,6 @@
 # Udacity DSND Capstone Data Analysis with Spark
 Machine learning on a large dataset using PySpark
+The full report on the project is [here](https://github.com/Lexie88rus/Udacity-DSND-Capstone-Data-Analysis-with-Spark/blob/master/DSND%20Capstone%20Report.pdf).
 
 ## Table of Contents
 * [Definition](#definition)
