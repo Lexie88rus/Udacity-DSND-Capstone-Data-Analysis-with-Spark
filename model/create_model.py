@@ -15,7 +15,7 @@ import findspark
 findspark.init()
 
 from pyspark.sql import SparkSession
-from pyspark.ml.feature import StringIndexer, VectorAssembler
+from pyspark.ml.feature import StringIndexer, VectorAssembler, Normalizer
 from pyspark.ml.feature import OneHotEncoderEstimator
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType
@@ -174,6 +174,13 @@ def prepare_dataset(df):
     #add column with last location of the user
     df = df.withColumn('last_state',when(df.last_ts == df.ts, df.state))
     
+    # find top states
+    top_states = df.select('last_state').groupBy(df.last_state).count().sort(col("count").desc()).limit(11).toPandas()
+    top_states_list = top_states['last_state'][1:].values.tolist()
+    
+    # change names of rare states to 'OTHER'
+    df = df.withColumn('last_state',when(df.last_state.isin(top_states_list), df.last_state).otherwise('OTHER'))
+    
     # calculate number of add friends for a user
     w = Window.partitionBy('userId')
     addfriend = df.where(df.page == 'Add Friend').select('userId', count('userId').over(w).alias('addfriend')).distinct()
@@ -224,13 +231,16 @@ def build_model(df_ml):
 
     # create vector for features
     features = ['genderVec', 'levelVec', 'stateVec', 'days_active', 'avg_songs', 'avg_events', 'thumbs_up', 'thumbs_down', 'addfriend']
-    assembler = VectorAssembler(inputCols=features, outputCol="features")
+    assembler = VectorAssembler(inputCols=features, outputCol="rawFeatures")
+    
+    # normalize features
+    normalizer = Normalizer(inputCol="rawFeatures", outputCol="features", p=1.0)
 
-    # initialize random forest classifier
-    rf = RandomForestClassifier(labelCol="label", featuresCol="features", numTrees=50, impurity = 'gini', maxDepth = 10)
+    # initialize random forest classifier with tuned hyperparameters
+    rf = RandomForestClassifier(labelCol="label", featuresCol="features", numTrees=100, impurity = 'gini', maxDepth = 5, featureSubsetStrategy = 'sqrt')
 
     # assemble pipeline
-    pipeline = Pipeline(stages = [stringIndexerGender, stringIndexerLevel, stringIndexerState, encoder, assembler, rf])
+    pipeline = Pipeline(stages = [stringIndexerGender, stringIndexerLevel, stringIndexerState, encoder, assembler, normalizer, rf])
     
     # fit model
     model = pipeline.fit(train)
@@ -306,7 +316,7 @@ def main():
         print('Please provide the filepath of the Sparkify data '\
               'as the first argument and the filepath of the pickle file to '\
               'save the model to as the second argument. \n\nExample: python '\
-              'train_classifier.py ../data/sparkify.csv classifier.pkl')
+              'train_classifier.py ../data/sparkify.csv classifier')
 
 
 if __name__ == '__main__':

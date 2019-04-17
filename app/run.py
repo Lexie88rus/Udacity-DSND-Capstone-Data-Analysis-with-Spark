@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr  10 2019
+Created on Wed Apr  10 2019
 
 @author: aleksandraastakhova
 
@@ -32,7 +32,7 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # load model
-model = PipelineModel.load('../model')
+model = PipelineModel.load('../classifier')
 
 # index webpage receives user input for the model
 @app.route('/')
