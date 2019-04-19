@@ -56,6 +56,8 @@ Both files contain the following data:
 
 __[Sample data file](https://github.com/Lexie88rus/Udacity-DSND-Capstone-Data-Analysis-with-Spark/blob/master/data/sample_sparkify_data.json)__.
 
+The __explorative data analysis__ of the mini dataset (the subset of the whole dataset) is provided in [Sparkify.ipynb](https://github.com/Lexie88rus/Udacity-DSND-Capstone-Data-Analysis-with-Spark/blob/master/Sparkify.ipynb).
+
 ## Implementation
 The input datasets contain massive amounts of data, which can’t be processed on a single machine. That is why I will use Spark clusters to analyze data and predict customer churn. I use PySpark and SparkML libraries to implement the solution.
 The implementation of the project consists of two parts:
